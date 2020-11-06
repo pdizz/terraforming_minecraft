@@ -1,0 +1,5 @@
+---
+- name: minecraft is restarted
+  service:
+    name: minecraft
+    state: restarted

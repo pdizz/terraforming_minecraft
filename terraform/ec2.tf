@@ -7,16 +7,6 @@ resource "aws_instance" "minecraft" {
 
   availability_zone = "us-west-2a"
   subnet_id = aws_subnet.usw2a_public.id
-
-  user_data = <<-EOF
-    #!/bin/bash
-    yum -y install java
-    useradd --shell /bin/false --home-dir /opt/minecraft minecraft
-    yum -y install wget
-    wget -qO /opt/minecraft/server.jar https://launcher.mojang.com/v1/objects/f02f4473dbf152c23d7d484952121db0b36698cb/server.jar
-    echo "eula=true" > /opt/minecraft/eula.txt
-    cd /opt/minecraft && nohup /usr/bin/java -Xms2048M -Xmx2048M -XX:+UseG1GC -jar server.jar nogui &
-    EOF
 }
 
 resource "aws_security_group" "minecraft" {
@@ -29,7 +19,7 @@ resource "aws_security_group" "minecraft" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["71.205.47.167/32"]
+    cidr_blocks = ["123.45.67.89/32"]
   }
   
   ingress {

@@ -1,0 +1,14 @@
+# /usr/lib/systemd/system/minecraftd.service
+[Unit]
+Description=The Minecraft Server
+After=network.target
+
+[Service]
+Type=simple
+User=minecraft
+WorkingDirectory=/opt/minecraft
+ExecStart=/usr/bin/java -Xms{{ java_initial_heap_size }} -Xmx{{ java_max_heap_size }} -XX:+UseG1GC -jar server.jar --nogui
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,23 @@
+---
+- name: eula is accepted
+  copy:
+    content: "eula=true"
+    dest: /opt/minecraft/eula.txt
+    owner: minecraft
+    group: minecraft
+    mode: 0644
+
+- name: minecraft service file is templated
+  template:
+    src: minecraft.service.j2
+    dest: /usr/lib/systemd/system/minecraft.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: minecraft is restarted # handler to restart service when config changes
+
+- name: minecraft is running and enabled
+  service:
+    name: minecraft
+    state: started
+    enabled: true
