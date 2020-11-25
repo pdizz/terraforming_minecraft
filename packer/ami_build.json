@@ -1,0 +1,33 @@
+{
+  "variables": {
+    "build_number": "",
+    "source_ami": ""
+  },
+  "builders": [
+      {
+          "type": "amazon-ebs",
+          "region": "us-west-2",
+          "source_ami": "{{user `source_ami`}}",
+          "instance_type": "t3a.micro",
+          "ssh_username": "centos",
+          "ssh_keypair_name": "minecraft_build",
+          "ami_name": "minecraft-{{user `build_number`}}",
+          "ena_support": "true",
+          "ssh_private_key_file": "~/minecraft_build.pem",
+          "tags": {
+              "Name": "minecraft",
+              "build": "{{user `build_number`}}",
+              "Description": "minecraft build {{user `build_number`}}"
+          }
+      }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "execute_command": "echo 'centos' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+      "scripts": [
+        "packer/scripts/minecraft-install.sh"
+      ]
+    }
+  ]
+}
