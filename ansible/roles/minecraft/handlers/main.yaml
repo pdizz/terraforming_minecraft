@@ -1,0 +1,6 @@
+---
+- name: minecraft is restarted
+  service:
+    name: minecraft
+    state: restarted
+    daemon_reload: yes

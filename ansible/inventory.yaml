@@ -1,0 +1,6 @@
+[minecraft]
+minecraft.pdizz.com    java_initial_heap_size=6144M java_max_heap_size=6144M
+
+[minecraft:vars]
+ansible_ssh_user=centos 
+ansible_ssh_private_key_file=~/minecraft.pem

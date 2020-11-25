@@ -1,0 +1,34 @@
+# /usr/lib/systemd/system/minecraft.service
+[Unit]
+Description=The Minecraft Server
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/minecraft
+
+User=minecraft
+Group=minecraft
+PrivateUsers=true
+ProtectSystem=full
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+
+Restart=on-failure
+RestartSec=60s
+
+ExecStart=/bin/sh -c '/usr/bin/screen -DmS minecraft /usr/bin/java -Xms{{ java_initial_heap_size }} -Xmx{{ java_max_heap_size }} -XX:+UseG1GC -jar server.jar --nogui'
+
+ExecReload=/usr/bin/screen -p 0 -S minecraft -X eval 'stuff "reload"\\015'
+
+ExecStop=/usr/bin/screen -p 0 -S minecraft -X eval 'stuff "say SERVER SHUTTING DOWN IN 10 SECONDS..."\015'
+ExecStop=/bin/sleep 5
+ExecStop=/usr/bin/screen -p 0 -S minecraft -X eval 'stuff "say SERVER SHUTTING DOWN IN 5 SECONDS..."\015'
+ExecStop=/bin/sleep 5
+ExecStop=/usr/bin/screen -p 0 -S minecraft -X eval 'stuff "save-all"\015'
+ExecStop=/usr/bin/screen -p 0 -S minecraft -X eval 'stuff "stop"\015'
+ExecStop=/bin/sleep 10
+
+[Install]
+WantedBy=multi-user.target

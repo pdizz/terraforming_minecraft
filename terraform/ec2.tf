@@ -11,16 +11,6 @@ resource "aws_instance" "minecraft" {
   root_block_device {
     delete_on_termination = true
   }
-
-  user_data = <<-EOF
-    #!/bin/bash
-    yum -y install java
-    useradd --shell /bin/false --home-dir /opt/minecraft minecraft
-    yum -y install wget
-    wget -qO /opt/minecraft/server.jar https://launcher.mojang.com/v1/objects/f02f4473dbf152c23d7d484952121db0b36698cb/server.jar
-    echo "eula=true" > /opt/minecraft/eula.txt
-    cd /opt/minecraft && nohup /usr/bin/java -Xms2048M -Xmx2048M -XX:+UseG1GC -jar server.jar nogui &
-    EOF
 }
 
 resource "aws_security_group" "minecraft" {
