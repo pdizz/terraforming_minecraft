@@ -1,0 +1,39 @@
+---
+# /dev/nvme1n1 == /dev/sdf
+- name: filesystem exists on volume device
+  filesystem:
+    dev: /dev/nvme1n1
+    fstype: ext4
+
+- name: minecraft volume directory exists
+  file:
+    path: /mnt/minecraft
+    state: directory
+    owner: minecraft
+    group: minecraft
+    mode: 0755
+
+- name: minecraft data directory mounted
+  mount:
+    path: /mnt/minecraft
+    src: /dev/nvme1n1
+    fstype: ext4
+    opts: noatime,relatime,nodiratime
+    state: mounted
+
+- name: server state files linked to volume
+  file:
+    src: /mnt/minecraft/{{ item }}
+    dest: /opt/minecraft/{{ item }}
+    state: link
+    owner: minecraft
+    group: minecraft
+  with_items:
+    - banned-ips.json
+    - banned-players.json
+    - logs
+    - ops.json
+    - server.properties
+    - usercache.json
+    - whitelist.json
+    - world

@@ -1,5 +1,15 @@
+data "aws_ami" "minecraft" {
+  owners           = ["self"]
+  most_recent      = true
+
+  filter {
+    name   = "name"
+    values = ["minecraft-*"]
+  }
+}
+
 resource "aws_instance" "minecraft" {
-  ami           = "ami-0bc06212a56393ee1" # centos 7 minimal
+  ami           = data.aws_ami.minecraft.id
   instance_type = "t3a.medium"
   key_name      = "minecraft"
 
@@ -70,4 +80,24 @@ resource "aws_route53_record" "minecraft" {
   type    = "A"
   ttl     = "300"
   records = [aws_eip.minecraft.public_ip]
+}
+
+resource "aws_ebs_volume" "minecraft" {
+  availability_zone = aws_subnet.usw2a_public.availability_zone
+  size              = 20
+
+  tags = {
+    Name = "minecraft"
+  }
+
+  # DONT DELETE THE DATA VOLUME!
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_volume_attachment" "minecraft" {
+  device_name = "/dev/sdf"
+  volume_id   = aws_ebs_volume.minecraft.id
+  instance_id = aws_instance.minecraft.id
 }
